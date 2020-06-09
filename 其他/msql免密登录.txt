@@ -1,0 +1,26 @@
+1、为root用户设置密码
+进入mysql数据库：use mysql;
+更改root用户密码： update user set password=password(‘song123’) where user=root;
+退出： exit;
+注意：如上操作是不会生效的，再用“mysql -u root”登录的时候，依然是无密码状态，原因在于mysql服务为加速系统效率，会先将用户权限更新到内存中，除非使用实时生效命令会再次刷新内存权限数据。在mysql命令行中执行flush privileges,或重启服务，service mysqld restart
+接下来无密码方式就不能登录，要采用以下方式登录
+mysql -u root -p 回车后，会提示输入密码，输入自己设置的密码就好
+
+2、忘记密码如何处理
+进行免密登录的配置
+首先停止MySQL服务，示例如下： service mysql stop
+然后，/etc/my.cnf 中在[mysqld]的段中加上一句：skip-grant-tables
+例如：
+[mysqld]
+datadir=/var/lib/mysql
+socket=/var/lib/mysql/mysql.sock
+skip-name-resolve
+skip-grant-tables
+保存并且退出vi。 ::?
+现在，无须密码即可登录MySQL，然后修改新密码，示例如下：
+这时，可以将root密码修改为新密码了，示例如下：
+mysql> update mysql.user set password=PASSWORD(“oldboy123”) where user=“root” and host=“localhost”;
+mysql> flush privileges; #<==刷新权限使得修改密码生效。
+Query OK, 0 rows affected (0.01 sec)
+然后重启服务 service mysql restart
+

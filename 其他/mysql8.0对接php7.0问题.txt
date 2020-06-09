@@ -1,0 +1,30 @@
+php(7.0以上版本)在连接mysql8.0会报错:
+Warning: mysqli_connect(): The server requested authentication method unknow
+The server requested authentication method unknown to the client
+
+原因:
+Mysql8启用了新的加密方法。
+
+修改mysql配置文件my.cnf/my.ini 使数据库启用兼容的加密方式
+
+在配置文件中新增如下代码：
+default_authentication_plugin= mysql_native_password
+
+重启mysql
+Linux:
+启动MySQL服务  mysql.server start
+停止MySQL服务  mysql.server stop
+重启MySQL服务  mysql.server restart
+Windows:
+net start mysql
+net stop mysql
+
+就如mysql,执行命令:
+ALTER USER 'username'@'localhost' IDENTIFIED WITH mysql_native_password BY 'yourpassword';
+我的是:
+ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY 'root';
+然后刷新即可:
+FLUSH PRIVILEGES;
+
+
+

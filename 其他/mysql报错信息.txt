@@ -1,0 +1,29 @@
+1.
+service mysql restart
+Shutting down MySQL.......... SUCCESS!
+Starting MySQL.2020-05-12T21:20:57.516559Z mysqld_safe error: log-error set to '/var/log/mariadb/mariadb.log', however file don't exists. Create writable for user 'mysql'.
+ ERROR! The server quit without updating PID file (/usr/local/mysql/data/localhost.localdomain.pid).
+
+ 解决:
+ [root@localhost data]# mkdir /var/log/mariadb
+ [root@localhost data]# touch /var/log/mariadb/mariadb.log
+ [root@localhost data]# chown -R mysql:mysql  /var/log/mariadb/
+
+ 2.
+ [root@localhost data]# service mysql restart
+  ERROR! MySQL server PID file could not be found!
+
+  解决:
+  [root@localhost data]# chmod -R 755 /usr/local/mysql/data
+  [root@localhost data]# service mysql restart
+  Shutting down MySQL.......... SUCCESS!
+  Starting MySQL.. SUCCESS!
+
+  3.
+  Slave_SQL_Running：no：
+
+  解决:
+  MariaDB [(none)]> stop slave;
+  MariaDB [(none)]> SET GLOBAL SQL_SLAVE_SKIP_COUNTER=1; START SLAVE;
+  MariaDB [(none)]> start slave;
+  MariaDB [(none)]> show slave status\G  ;
